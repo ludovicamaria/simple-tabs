@@ -1,7 +1,6 @@
 # React Tabs Exercise
 
-This project is a starter template created with **Vite**, **React**, **TypeScript**, and **Tailwind CSS v4**.  
-The full instructions for the exercise are displayed on the main page when you run the app.
+This project uses **Vite**, **React**, **TypeScript**, and **Tailwind CSS v4** to create a 2 tabs component.  
 
 ---
 
