@@ -7,18 +7,26 @@ export default function BooksTabContent() {
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [publishedYear, setPublishedYear] = useState("");
-  const [showButton, setShowButton] = useState<boolean>(false)
-  const blankCondition = title === "" || genre === "" || publishedYear === "";
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false)
+  const [isSubmitted, setIsSubmitted] = useState(false); 
+
+  const blankCondition = isSubmitted && (title.trim() === "" || genre.trim() === "" || publishedYear.trim() === "");
+
   const validYear = /^\d{4}$/.test(publishedYear);
-
+  
   useEffect(() => {
-    if (blankCondition) {
-      setShowButton(true)
-    } else {
-      setShowButton(false)
-    }
-  })
+      setIsButtonDisabled(blankCondition)
+  }, [title, genre, publishedYear])
 
+
+  const handleSubmit = () => {
+    setIsSubmitted(true); 
+    if (!blankCondition && validYear) {
+      alert(JSON.stringify({ title, genre, publishedYear }, null, 2));
+    }
+  };
+  
+  
   return (
     <TabComponent
       tabContent={
@@ -55,14 +63,13 @@ export default function BooksTabContent() {
             ]}
             buttonProps={{
               buttonText: "Send alert",
-              onClick: (e) =>
-                alert(JSON.stringify({ title, genre, publishedYear }, null, 2)),
-              isDisabled: showButton}}
+              onClick: handleSubmit,
+              isDisabled: isButtonDisabled}}
           />
-          {blankCondition ? (
+          {isSubmitted && blankCondition ? (
             <ErrorComponent errorMessage="Fields cannot be empty" />
           ) : null}
-          {!validYear ? (
+          {isSubmitted && !validYear ? (
             <ErrorComponent errorMessage="Please insert a valid year" />
           ) : null}
         </>

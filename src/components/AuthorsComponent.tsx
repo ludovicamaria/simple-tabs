@@ -7,9 +7,10 @@ export default function AuthorsTabContent() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [date, setDate] = useState("");
-  const [showButton, setShowButton] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false)
+  const [isSubmitted, setIsSubmitted] = useState(false); 
 
-  const blankCondition = firstName === "" || lastName === "" || date === "";
+  const blankCondition = isSubmitted && (firstName.trim() === "" || lastName.trim() === "" || date.trim() === "");
 
   const isDateInTheFuture = (inputDateStr: string): boolean => {
     const inputDate = new Date(inputDateStr);
@@ -22,8 +23,15 @@ export default function AuthorsTabContent() {
   };
 
   useEffect(() => {
-    setShowButton(blankCondition);
-  }, [firstName, lastName, date]); 
+    setIsButtonDisabled(blankCondition);
+  }, [firstName, lastName, date]);
+
+  const handleSubmit = () => {
+    setIsSubmitted(true); 
+    if (!blankCondition && !isDateInTheFuture(date)) {
+      alert(JSON.stringify({ firstName, lastName, date }, null, 2));
+    }
+  };
 
   return (
     <TabComponent
@@ -61,15 +69,14 @@ export default function AuthorsTabContent() {
             ]}
             buttonProps={{
               buttonText: "Send alert",
-              onClick: () =>
-                alert(JSON.stringify({ firstName, lastName, date }, null, 2)),
-              isDisabled: showButton,
+              onClick: handleSubmit, 
+              isDisabled: isButtonDisabled,
             }}
           />
-          {blankCondition ? (
+          {isSubmitted && blankCondition ? (
             <ErrorComponent errorMessage="Fields cannot be empty" />
           ) : null}
-          {isDateInTheFuture(date) ? (
+          {isSubmitted && isDateInTheFuture(date) ? (
             <ErrorComponent errorMessage="Date of birth cannot be in the future" />
           ) : null}
         </>
